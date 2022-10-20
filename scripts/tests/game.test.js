@@ -240,4 +240,33 @@ describe("gameplay works correctly", () => {
         // be called with the text "wrong move!" and an exclamation mark.
         expect(window.alert).toBeCalledWith("Wrong move!")
     });
+    // 24.
+    // check to see if a turn is happening
+    // when the computer is showing its turns we set a key called turnInProgress 
+    // to true. 
+    // When the turn is finished, we reset this key in the game object to false.
+    test("should toggle turnInProgress to true", () => {
+        showTurns();
+        expect(game.turnInProgress).toBe(true);
+    });
+    // 26. 
+    // test if the last button value is being set for if we click
+    // during the computer's sequence
+    test("clicking during computer sequence should fail", () => {
+        // start computer sequence
+        showTurns();
+        // reset game.lastButton key so it's empty
+        game.lastButton = "";
+        // Now, when I call the click function on one of our buttons 
+        // I'm going  to choose button 2 here, 
+        // then it should not set a value of game.lastButton, there should be no ID 
+        // in there if my clicks are disabled.
+        // So in other words, the contents of lastButton shouldn't change after we 
+        // clear it, if clicks are disabled.
+        // aka, it should still be empty like we set above
+        document.getElementById("button2").click();
+        // this will fail before we add something to prevent buttons being clicked
+        // as it will receive what was fed into it (will receive button2)
+        expect(game.lastButton).toEqual("");
+    });
 });

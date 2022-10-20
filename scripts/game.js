@@ -48,17 +48,37 @@ function newGame() {
             // this is a click event listener, & we're going to pass in the event 
             // object (e) as well
             circle.addEventListener("click", (e) => {
-                // (e) allows us to get our click target's ID. 
-                // So depending on which circle, we click on the ID will be button1,  
-                // button2, button3, or button4.
-                // Store click target's ID in move
-                let move = e.target.getAttribute("id");
-                // call function with parameter
-                lightsOn(move);
-                // push move into game.playerMoves array
-                game.playerMoves.push(move);
-                // then call playerTurn function
-                playerTurn();
+                // 23.
+                // would be good to store the last button pressed in the game
+                // state so that we can disable clicks during the computer's turn.
+                // To do this, we're going to check if a circle is clicked
+                // by setting a value that we're going to call lastButton.
+                // And this will always store the ID of the last circle 
+                // that was clicked.
+                // if the currentGame array is greater than 0 we have a game in progress
+                // 27. -- and not game in progress
+                    // if game is in progress, click is disabled
+                    // if game not in progress, click is allowed
+                if (game.currentGame.length > 0 /* 27. */ && !game.turnInProgress) {
+                    // 23. moved let move, lightsOn, game.player & playerTurn into
+                    // new if statement
+                    // 19. (e) allows us to get our click target's ID. 
+                    // So depending on which circle, we click on the ID will be button1,  
+                    // button2, button3, or button4.
+                    // Store click target's ID in move
+                    let move = e.target.getAttribute("id");
+                    // 23.
+                    // basically, this remembers the player's last move before the
+                    // computer's current move, so if the player clicks again
+                    // it doesn't change their previous move
+                    game.lastButton = move;
+                    // call function with parameter
+                    lightsOn(move);
+                    // push move into game.playerMoves array
+                    game.playerMoves.push(move);
+                    // then call playerTurn function
+                    playerTurn();
+                }
             });
             // after adding the event listener we can set the  
             // data listener attribute on our circle to true
@@ -125,6 +145,8 @@ function lightsOn(circ) {
 
 // 17.
 function showTurns() {
+    // 25. set to true as our turns have started
+    game.turnInProgress = true;
     // set turnNumber to 0
     game.turnNumber = 0;
     // use that as the index number for our game.currentGame array
@@ -149,6 +171,8 @@ function showTurns() {
         // the sequence is finished so we can clear our interval.  
         if (game.turnNumber >= game.currentGame.length) {
             clearInterval(turns);
+            // 25. turn is now finished, so set to false
+            game.turnInProgress = false;
         };
     }, 800);
 };
