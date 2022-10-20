@@ -165,8 +165,9 @@ function showTurns() {
 // as a default key with the value of zero
 // and add a test to see if the turnNumber key exists
 
+// 20.
 function playerTurn() {
-    //is get the index  of the last element from our playerMoves array.  
+    // is get the index  of the last element from our playerMoves array.  
     // Because what we're going to do is compare that with the same index 
     // in the current game array
     let i = game.playerMoves.length - 1;
@@ -181,7 +182,11 @@ function playerTurn() {
             showScore();
             addTurn();
         }
-    }
+    } // 22.
+        else {
+            alert("Wrong move!");
+            newGame();
+        }
 }
 
 

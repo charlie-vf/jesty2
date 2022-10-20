@@ -7,6 +7,17 @@
 
 const { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn } = require("../game");
 
+// 21.
+// want to display an alert if the player gets it wrong
+// the first argument to spyOn is the window and the second is the name of 
+// the method, in this case "alert".
+// The reason we're doing this is because alert is actually a method 
+// of the window object. 
+// So we're going to catch it when an alert happens and divert it 
+// harmlessly into an empty function. 
+jest.spyOn(window, "alert").mockImplementation(() => { })
+
+
 // 1.
 // load the index.html file into Jests mock DOM
 // this sets up the DOM before all other test are run
@@ -213,5 +224,20 @@ describe("gameplay works correctly", () => {
         playerTurn();
         // After calling playerTurn, we would then expect the score to have increased
         expect(game.score).toBe(1);
+    });
+    // 22. 
+    // test for spy
+    test("should call an alert if the move is wrong", () => {
+        // instead of pushing the correct move into our playerMoves array,  
+        // we're going to push a string that says "wrong".
+        game.playerMoves.push("wrong");
+        playerTurn();
+        // When we call playerTurn we can then expect that our alert is going 
+        // to be called.
+        // Now notice here we're using a  new matcher to be called with,  
+        // so because we're spying on our alert function, we can see when it's called  
+        // and what parameters it's called with. So we're expecting an alert box to  
+        // be called with the text "wrong move!" and an exclamation mark.
+        expect(window.alert).toBeCalledWith("Wrong move!")
     });
 });
