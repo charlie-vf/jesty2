@@ -5,7 +5,7 @@
 // npm install --save-dev jest-environment-jsdom
 // not just npm install --save-dev
 
-const { game, newGame, showScore } = require("../game");
+const { game, newGame, showScore, addTurn } = require("../game");
 
 // 1.
 // load the index.html file into Jests mock DOM
@@ -93,10 +93,22 @@ describe("newGame works correctly", () => {
     // test newGame resets currentGame & playerMoves arrays
     // check if the length of the arrays after newGame runs is 0
     // could use toEqual here, too
-    test("should reset currentGame array", () => {
-        expect(game.currentGame.length).toBe(0);
+        // 12.
+        // remove this test as we are now building the addTurn function
+        // which we expect to add a randomly selected button ID to the sequence
+        // test("should clear the computer sequence array", () => {
+        //     expect(game.currentGame.length).toBe(0);
+        // });
+        // 13. 
+        // Instead of testing to  see if the currentGame sequence is empty,  
+        // we need to check if it contains one element - which will be the 
+        // new turn that we've just added.
+        // this will fail at first because the array is empty
+        // so we need to build the addTurn function
+    test("should be one move in the computer's game array", () => {
+        expect(game.currentGame.length).toBe(1);
     });
-    test("should reset playerMoves array", () => {
+    test("should clear the playerMoves array", () => {
         expect(game.playerMoves.length).toBe(0);
     });
     // 10.
