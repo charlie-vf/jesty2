@@ -5,7 +5,7 @@
 // npm install --save-dev jest-environment-jsdom
 // not just npm install --save-dev
 
-const { game, newGame, showScore, addTurn } = require("../game");
+const { game, newGame, showScore, addTurn, lightsOn } = require("../game");
 
 // 1.
 // load the index.html file into Jests mock DOM
@@ -115,5 +115,52 @@ describe("newGame works correctly", () => {
     // this will fail at first, so we need to build the showScore function
     test("should display 0 for the element with id of score", () => {
         expect(document.getElementById("score").innerText).toEqual(0);
+    });
+});
+
+// 15. 
+// showTurns function and player clicks should cause the circle 
+// to change colour or to light up. 
+describe("gameplay works correctly", () => {
+    // beforeAll runs before all tests
+    // beforeEach runs before each test
+    // so, we'll reset the state each time
+    beforeEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+        // run addTurn function to add turn to currentGame array
+        addTurn();
+    });
+    // afterEach:
+    // Our tests are going to modify the game state, but we know that, 
+    // following the RITE  principle our test should be isolated. That is,  
+    // they should be able to be run in any order, so let's reset the state 
+    // again after each test.
+    afterEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+    });
+    // since this is testing the gameplay, not just the new game function. Let's 
+    // add in a test to make sure that addTurn works correctly
+    // as we've reset the state and called addTurn in beforeEach, there should
+    // be one element in the currentGame array
+    test("addTurn adds a new turn to the game", () => {
+        addTurn();
+        expect(game.currentGame.length).toBe(2);
+    });
+    // this test fails at first because we haven't defined the lightsOn function
+    test("should add correct class to light up buttons", () => {
+        // get one of the IDs from my currentGame array,
+        // and assign it to this variable called button.
+        // we'll go for the first  element in the currentGame array,  
+        // because we know there'll always be at least one element in there
+        let button = document.getElementById(game.currentGame[0]);
+        // then we'll call the lightsOn function, with that same ID. 
+        lightsOn(game.currentGame[0]);
+        // And now we can expect that our buttons class list 
+        // should contain the light class
+        expect(button.classList).toContain("light");
     });
 });

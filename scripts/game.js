@@ -72,11 +72,26 @@ function addTurn() {
 // our fake data from the currentGame array and then addTurn is pushing 
 // a random choice. 
 
-
+// 16.
+// call the lightsOn function with the ID of one of our circles,  
+// so we're going to refer to this inside of the function as "circ".
+function lightsOn(circ) {
+    // get the element with the ID of the circle that we passed in 
+    // and add the light class
+    document.getElementById(circ).classList.add("light");
+    // use JavaScript's set timeout function to remove this class after 400  
+    // milliseconds
+    // reversal  of what we did before. We're going to get our same element, 
+    // the class list, but this time we'll remove the light class and then   
+    // before the closing bracket we can add in our 400 milliseconds.
+    setTimeout(() => {
+        document.getElementById(circ).classList.remove("light");
+    }, 400);
+};
 
 
 // at the end of game.js we'll add our module.exports = { }
 // curly braces because we'll be exporting more than  
 // one object and function from this file, so we need to put them in curly braces.
 // and in game.test.js we'll import it at the top
-module.exports = { game, newGame, showScore, addTurn };
+module.exports = { game, newGame, showScore, addTurn, lightsOn };
