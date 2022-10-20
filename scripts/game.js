@@ -20,6 +20,9 @@ let game = {
     playerMoves: [],
     // 18.
     turnNumber: 0,
+    // 28.
+    lastButton: "",
+    turnInProgress: false,
     // 5. 
     // add values to empty choices array so test passes
     // this is the game.choices key
