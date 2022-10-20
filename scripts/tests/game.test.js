@@ -5,7 +5,7 @@
 // npm install --save-dev jest-environment-jsdom
 // not just npm install --save-dev
 
-const { game, newGame, showScore, addTurn, lightsOn } = require("../game");
+const { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn } = require("../game");
 
 // 1.
 // load the index.html file into Jests mock DOM
@@ -60,6 +60,10 @@ describe("game object contains correct key", () => {
     // receieved an empty array as we haven't added them to the game.js file
     test("choices contain correct ids", () => {
         expect(game.choices).toEqual(["button1", "button2", "button3", "button4"]);
+    });
+    // 18.
+    test("turnNumber key exists", () => {
+        expect("turnNumber" in game).toBe(true);
     });
 });
 
@@ -116,6 +120,20 @@ describe("newGame works correctly", () => {
     test("should display 0 for the element with id of score", () => {
         expect(document.getElementById("score").innerText).toEqual(0);
     });
+    // 19.
+    // this test will fail until we attach the event listeners
+    test("expect data-listener in index.html to be true", () => {
+        // get all of the elements which have the class of circle,  
+        // and that will be stored in the elements constant 
+        const elements = document.getElementsByClassName("circle");
+        // do a loop that will loop through each of these elements
+        // as this is better than doing a test for each div
+        for (let element of elements) {
+            // expect that the attribute of that element, 
+            // the data-listener attribute, is set to true.
+            expect(element.getAttribute("data-listener")).toEqual("true");
+        }
+    });
 });
 
 // 15. 
@@ -162,5 +180,38 @@ describe("gameplay works correctly", () => {
         // And now we can expect that our buttons class list 
         // should contain the light class
         expect(button.classList).toContain("light");
+    });
+    // 17. 
+    // showTurns should:
+        // a) step through the currentGame array
+        // b) turn the light on
+        // c) turn the light off
+    // extend the game object and give it a turnNumber property 
+    // that's updated as showTurns steps through the sequence.
+    test("showTurns should update game.turnNumber", () => {
+        // set game.turnNumber to 42 in the state
+        game.turnNumber = 42;
+        // call showTurns, which should reset the turnNumber
+        showTurns();
+        // check to see if turnNumber is now 0
+        expect(game.turnNumber).toBe(0);
+    });
+    // 20.
+    // playerTurn() should:
+        // a) check if the player move matches the computer move
+        // b) if we are at the end of the sequence then increment the score
+        // and add another turn
+        // c) if the moves do not match then display an alert and start a new game
+    test("should increment the score if the turn is correct", () => {
+        // in the beforeEach function for our gameplay, we're adding one turn.
+        // So we're going to take that turn and we're going to push it into 
+        // the playerMoves array before calling playerTurn. 
+        // That way we know that we have a correct answer because the playerTurn  
+        // and the computersTurn match each other.
+        game.playerMoves.push(game.currentGame[0]);
+        // call function
+        playerTurn();
+        // After calling playerTurn, we would then expect the score to have increased
+        expect(game.score).toBe(1);
     });
 });

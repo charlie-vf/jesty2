@@ -6,6 +6,7 @@
     // lightsOn()
     // playerTurn()
     // showScore()
+    // some way of detecting clicks
 
 
 // 3.
@@ -17,6 +18,8 @@ let game = {
     score: 0,
     currentGame: [],
     playerMoves: [],
+    // 18.
+    turnNumber: 0,
     // 5. 
     // add values to empty choices array so test passes
     // this is the game.choices key
@@ -34,6 +37,36 @@ function newGame() {
     // ^^ at this stage, newGame resets everything, but doesn't start a new game
     // need to call showScore function - reset the score to zero on the DOM
     // and addTurn function - add a turn to our currently empty sequence
+
+    // 19.
+    // get all of our elements that have the class name of circle.
+    for (let circle of document.getElementsByClassName("circle")) {
+        // As we step through then, we're going to check the attribute of each 
+        // circle and if the attribute is set to false, (aka not true) 
+        // then we can go ahead and add our event listener.
+        if (circle.getAttribute("data-listener") !== "true") {
+            // this is a click event listener, & we're going to pass in the event 
+            // object (e) as well
+            circle.addEventListener("click", (e) => {
+                // (e) allows us to get our click target's ID. 
+                // So depending on which circle, we click on the ID will be button1,  
+                // button2, button3, or button4.
+                // Store click target's ID in move
+                let move = e.target.getAttribute("id");
+                // call function with parameter
+                lightsOn(move);
+                // push move into game.playerMoves array
+                game.playerMoves.push(move);
+                // then call playerTurn function
+                playerTurn();
+            });
+            // after adding the event listener we can set the  
+            // data listener attribute on our circle to true
+            circle.setAttribute("data-listener", "true");
+            // when you click New Game in the actual game
+            // all the data-listeners in the html will change to true
+        };
+    };
     // 11.
     showScore();
     // 13. 
@@ -65,7 +98,8 @@ function addTurn() {
     // resulting choice is pushed onto the current game array.
     game.currentGame.push(game.choices[(Math.floor(Math.random() * 4))]);
     // c)
-    // showTurns();
+    // this was commented out until step 17 was finished in game & game.test
+    showTurns();
 }
 // 14. 
 // ^^ currentGame.length test now passes because newGame is clearing out
@@ -89,9 +123,70 @@ function lightsOn(circ) {
     }, 400);
 };
 
+// 17.
+function showTurns() {
+    // set turnNumber to 0
+    game.turnNumber = 0;
+    // use that as the index number for our game.currentGame array
+    // why are we setting this on the state? Why don't we just use a simple  
+    // local variable here? 
+    // Sometimes it's helpful to set this as state so that we can test it.  
+    // it's good to think about what happens in our function as being kind of like a 
+    // black box.  
+    // We can test what goes in, we can test what comes out, but we don't have many 
+    // ways of testing what's inside unless they're doing something to change or 
+    // set the global state. 
+    // So we're starting our global state in the game object, which is why we're 
+    // using this as a counter.
+    let turns = setInterval(() => {
+        // calling the lightsOn function, inside a JavaScript set interval.  
+        // Which just makes sure that we have a little pause between the 
+        // lights being shown and the next step in the sequence.
+        lightsOn(game.currentGame[game.turnNumber]);
+        game.turnNumber++;
+        // added an if statement inside here: if our turnNumber  
+        // is equal or over the length of our current game array then, obviously,  
+        // the sequence is finished so we can clear our interval.  
+        if (game.turnNumber >= game.currentGame.length) {
+            clearInterval(turns);
+        };
+    }, 800);
+};
+// ^^ in summary, showTurns is:
+    // setting this interval 
+    // turning the lights on with lightsOn function,  
+    // incrementing the game.turnNumber,
+    // and then turning the lights off again.
+
+// 18.
+// so, we added a new key & value to our global state by creating turnNumber 
+// in the showTurns function. 
+// So really we should add it to the global state too, 
+// as a default key with the value of zero
+// and add a test to see if the turnNumber key exists
+
+function playerTurn() {
+    //is get the index  of the last element from our playerMoves array.  
+    // Because what we're going to do is compare that with the same index 
+    // in the current game array
+    let i = game.playerMoves.length - 1;
+    // if our player gets the answers correct then these two should match.
+    if (game.currentGame[i] === game.playerMoves[i]) {
+        // if the length of  our current game array is equal to the length  
+        // of our player moves, then we must be at the end of the sequence 
+        // and the player got them all correct.
+        if (game.currentGame.length == game.playerMoves.length) {
+            // so we can increment the score and add a new turn.
+            game.score++;
+            showScore();
+            addTurn();
+        }
+    }
+}
+
 
 // at the end of game.js we'll add our module.exports = { }
 // curly braces because we'll be exporting more than  
 // one object and function from this file, so we need to put them in curly braces.
 // and in game.test.js we'll import it at the top
-module.exports = { game, newGame, showScore, addTurn, lightsOn };
+module.exports = { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn };
